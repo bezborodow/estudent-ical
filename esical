@@ -1,0 +1,13 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Data::ICal;
+use Data::ICal::Entry::Event;
+ 
+my $calendar = Data::ICal->new();
+ 
+my $event = Data::ICal::Entry::Event->new();
+ 
+$calendar = Data::ICal->new();
+$calendar->add_entry($event);
+print $calendar->as_string;
