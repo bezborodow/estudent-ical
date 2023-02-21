@@ -19,7 +19,6 @@ my %month;
 @month{qw(jan feb mar apr may jun jul aug sep oct nov dec)} = 1..12;
 
 my $i = 0;
-my $when = 0;
 my $course_code = "";
 my $course_title = "";
 my $class = "";
@@ -31,7 +30,6 @@ while (<>) {
 
     if ($_ =~ /^When: (Weekly|Fortnightly) on \S* (\d{2})-(\S{3}) to (\d{2})-(\S{3}), (\d+):(\d{2}) (am|pm) - (\d+):(\d{2}) (am|pm) Where: (.+)/) {
         $i = 0;
-        $when = 0;
 
         my $start = Date::ICal->new(
             day => $2,
