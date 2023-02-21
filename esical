@@ -1,29 +1,66 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use feature 'say';
 use Data::ICal;
 use Data::ICal::Entry::Event;
- 
-my $calendar = Data::ICal->new();
+use Date::Calc qw(Delta_Days);
+use Date::ICal;
+use Time::Piece;
+
+my $calendar = Data::ICal->new(
+    rfc_strict => 1,
+    auto_uid => 1,
+);
+my $event;
+
+my $t = Time::Piece->new();
+my %month;
+@month{qw(jan feb mar apr may jun jul aug sep oct nov dec)} = 1..12;
 
 my $i = 0;
-my $event;
+my $when = 0;
 my $course_code = "";
 my $course_title = "";
 my $class = "";
-my $when = 0;
+
 while (<>) {
-    next if $_ =~ /Register|Collapse/;
+    next if $_ =~ /^Registered Class/;
+    next if $_ =~ /^Collapse$/;
+    next if $_ =~ /^All Classes Registered/;
 
     if ($_ =~ /^When: (Weekly|Fortnightly) on \S* (\d{2})-(\S{3}) to (\d{2})-(\S{3}), (\d+):(\d{2}) (am|pm) - (\d+):(\d{2}) (am|pm) Where: (.+)/) {
         $i = 0;
         $when = 0;
-        print $_;
+
+        my $start = Date::ICal->new(
+            day => $2,
+            month => $month{lc($3)},
+            year => $t->year,
+            hour => $6 + ($8 eq 'pm' and $6 != 12 ? 12 : 0),
+            min => $7,
+            sec => 0,
+        );
+        my $end = Date::ICal->new(
+            day => $2,
+            month => $month{lc($3)},
+            year => $t->year,
+            hour => $9 + ($11 eq 'pm' and $9 != 12 ? 12 : 0),
+            min => $10,
+            sec => 0,
+        );
+
+        my $interval = $1 eq "Fortnightly" ? 2 : 1;
+        my $count = (Delta_Days($t->year, $month{lc($3)}, $2, $t->year, $month{lc($5)}, $4) + 1) / 7 / $interval;
 
         $event = Data::ICal::Entry::Event->new();
         $calendar->add_entry($event);
         $event->add_properties(
             summary => "$course_code $course_title $class",
+            description => "$class: $12",
+            dtstart => $start->ical(localtime => 0),
+            dtend => $end->ical(localtime => 0),
+            rrule => "FREQ=WEEKLY;INTERVAL=$interval;COUNT=$count",
         );
 
         next;
@@ -43,4 +80,4 @@ while (<>) {
     $i++;
 }
 
-#print $calendar->as_string;
+print $calendar->as_string;
