@@ -6,8 +6,48 @@ use Data::ICal::Entry::Event;
  
 my $calendar = Data::ICal->new();
  
-my $event = Data::ICal::Entry::Event->new();
- 
-$calendar = Data::ICal->new();
-$calendar->add_entry($event);
-print $calendar->as_string;
+
+my $i = 0;
+my $event;
+my $summary = "";
+my $course_code = "";
+my $course_title = "";
+my $class = "";
+my $when = 0;
+while (<>) {
+    next if $_ =~ /Register|Collapse/;
+
+    my $chunk = $_;
+    chomp $chunk;
+
+    if ($_ =~ /^When: /) {
+        $i = 0;
+        $when = 0;
+        $summary = "$course_code $course_title $class";
+        print "$summary\n";
+        print $_;
+
+        $event = Data::ICal::Entry::Event->new();
+        $calendar->add_entry($event);
+        $event->add_properties(
+            summary => $summary,
+        );
+
+        next;
+    }
+
+    if ($i == 0) {
+
+        $class = $chunk;
+    } elsif ($i == 1) {
+        $course_title = $chunk;
+    } elsif ($i == 2) {
+        $course_code = $class;
+        $class = $chunk;
+    }
+
+
+    $i++;
+}
+
+#print $calendar->as_string;
