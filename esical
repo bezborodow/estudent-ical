@@ -5,11 +5,9 @@ use Data::ICal;
 use Data::ICal::Entry::Event;
  
 my $calendar = Data::ICal->new();
- 
 
 my $i = 0;
 my $event;
-my $summary = "";
 my $course_code = "";
 my $course_title = "";
 my $class = "";
@@ -17,27 +15,23 @@ my $when = 0;
 while (<>) {
     next if $_ =~ /Register|Collapse/;
 
-    my $chunk = $_;
-    chomp $chunk;
-
-    if ($_ =~ /^When: /) {
+    if ($_ =~ /^When: (Weekly|Fortnightly) on \S* (\d{2})-(\S{3}) to (\d{2})-(\S{3}), (\d+):(\d{2}) (am|pm) - (\d+):(\d{2}) (am|pm) Where: (.+)/) {
         $i = 0;
         $when = 0;
-        $summary = "$course_code $course_title $class";
-        print "$summary\n";
         print $_;
 
         $event = Data::ICal::Entry::Event->new();
         $calendar->add_entry($event);
         $event->add_properties(
-            summary => $summary,
+            summary => "$course_code $course_title $class",
         );
 
         next;
     }
 
+    my $chunk = $_;
+    chomp $chunk;
     if ($i == 0) {
-
         $class = $chunk;
     } elsif ($i == 1) {
         $course_title = $chunk;
@@ -45,7 +39,6 @@ while (<>) {
         $course_code = $class;
         $class = $chunk;
     }
-
 
     $i++;
 }
