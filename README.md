@@ -1,4 +1,4 @@
-# estudent-ical
+# `estudent-ical`
 eStudent iCalendar converter.
 
 This will export the student timetable from the Flinders University Student System into the
@@ -8,8 +8,12 @@ This may also work with other institutions such as Macquarie University.
 ## Usage
 
 ```console
+$ git clone git@github.com:bezborodow/estudent-ical.git
+$ cd estudent-ical/
 $ sudo apt-get install libdata-ical-perl libdate-calc-perl
 $ cpan Date::ICal
+$ ./esical > study.ics
+CTRL-D
 ```
 
 ## Video Tutorial
