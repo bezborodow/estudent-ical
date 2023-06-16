@@ -16,12 +16,6 @@ $ ./esical > study.ics
 CTRL-D
 ```
 
-## Video Tutorial
-
-[![Export Flinders University Student Timetable into Google Calendar using iCalendar
-](https://img.youtube.com/vi/JZ4Ug6Yd9pU/0.jpg)](https://www.youtube.com/watch?v=JZ4Ug6Yd9pU)
-
-
 ## References
 
  * https://metacpan.org/pod/Data::ICal
