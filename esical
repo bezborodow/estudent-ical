@@ -25,9 +25,13 @@ my $course_title = "";
 my $class = "";
 
 while (<>) {
-    next if $_ =~ /^Registered Class/;
-    next if $_ =~ /^Collapse$/;
-    next if $_ =~ /^All Classes Registered/;
+    if ($_ =~ /(When: .+)/) {
+        $_ = $1;
+    } else {
+        next if $_ =~ /^Registered Class/;
+        next if $_ =~ /^Collapse$/;
+        next if $_ =~ /^All Classes Registered/;
+    }
 
     if ($_ =~ /^([A-Z]{4}[0-9]{4})/) {
         $course_code = $1;
