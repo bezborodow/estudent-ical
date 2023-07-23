@@ -12,8 +12,8 @@ $ git clone git@github.com:bezborodow/estudent-ical.git
 $ cd estudent-ical/
 $ sudo apt-get install libdata-ical-perl libdate-calc-perl
 $ cpan Date::ICal
-$ ./esical > study.ics
-CTRL-D
+$ ./esical < 2023SI > study2023SI.ics
+$ ./esical < 2023SII > study2023SII.ics
 ```
 
 ## References
