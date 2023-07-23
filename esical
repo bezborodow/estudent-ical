@@ -19,6 +19,7 @@ my %month;
 @month{qw(jan feb mar apr may jun jul aug sep oct nov dec)} = 1..12;
 
 my $i = 0;
+my $n = 0;
 my $course_code = "";
 my $course_title = "";
 my $class = "";
@@ -70,6 +71,7 @@ while (<>) {
                 dtend => $end->ical(localtime => 0),
                 rrule => "FREQ=WEEKLY;INTERVAL=$interval;COUNT=$count",
             );
+            $n++;
 
             print STDERR "        ", $start->ical(localtime=>0), " - ", $end->ical(localtime=>0);
             print STDERR "; interval: $interval week; $count occurances.\n";
@@ -86,5 +88,8 @@ while (<>) {
 
     $i++;
 }
+
+print STDERR "\nFound $n events.\n";
+print STDERR "Done.\n";
 
 print $calendar->as_string;
