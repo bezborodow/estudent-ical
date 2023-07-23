@@ -26,21 +26,28 @@ my $class = "";
 
 while (<>) {
     if ($_ =~ /(When: .+)/) {
+        # Remove junk preceeding a When statement.
         $_ = $1;
-    } else {
-        next if $_ =~ /^Registered Class/;
-        next if $_ =~ /^Collapse$/;
-        next if $_ =~ /^All Classes Registered/;
     }
 
+    # Skip lines beginning with junk.
+    next if $_ =~ /^Registered Class/;
+    next if $_ =~ /^Collapse$/;
+    next if $_ =~ /^All Classes Registered/;
+
+    # This is a course code (e.g., ENGR1401.)
     if ($_ =~ /^([A-Z]{4}[0-9]{4})/) {
         $course_code = $1;
         print STDERR "$course_code ";
         $i = 0;
+
+    # The line immediately after a course code is a course title.
     } elsif ($i == 1) {
         $course_title = $_;
         chomp $course_title;
         print STDERR "$course_title\n";
+
+    # Parse When statements.
     } elsif ($_ =~ /^When:/) {
         if ($_ =~ /^When: (Once-only|Weekly|Fortnightly) on \S* (\d{2})-(\S{3}) to (\d{2})-(\S{3}), (\d+):(\d{2}) (am|pm) - (\d+):(\d{2}) (am|pm) Where: (.+)/) {
             my $start = Date::ICal->new(
@@ -84,6 +91,8 @@ while (<>) {
             print STDERR "Error: Cannot parse When statement for '$course_code' -- '$class'.\n";
             exit(1);
         }
+
+    # This should be a class (e.g., Computer Lab, Lecture, etc.)
     } else {
         $class = $_;
         chomp $class;
