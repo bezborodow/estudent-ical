@@ -34,6 +34,10 @@ while (<>) {
     next if $_ =~ /^Registered Class/;
     next if $_ =~ /^Collapse$/;
     next if $_ =~ /^All Classes Registered/;
+    next if $_ =~ /^Warning/;
+    next if $_ =~ /^There are no classes that are on today or in the future for you to register./;
+    next if $_ =~ /^Attention Required/;
+    next if $_ =~ /^\d+ Class Not Available/;
 
     # This is a course code (e.g., ENGR1401.)
     if ($_ =~ /^([A-Z]{4}[0-9]{4})/) {
